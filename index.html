@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Lyvt • Internet Speed Diagnostics" />
+    <title>Internet Speed Lab • Lyvt</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="styles.css" />
+
+    <link rel="icon" type="image/png" href="../assets/pictures/avatar.png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="../assets/pictures/avatar.png" />
+
+    <script src="ndt7.min.js" defer></script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header class="site-header" role="banner">
+        <div class="container nav">
+            <a class="logo" href="../index.html">
+                <span class="emoji">✦</span>
+                <span>Lyvt</span>
+            </a>
+            <div class="header-actions">
+                <a class="btn ghost" href="../index.html">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Back to portfolio
+                </a>
+                <button id="themeToggle" class="icon-button" type="button" aria-label="Toggle theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main container" id="main">
+        <section class="hero glass" aria-labelledby="heroTitle">
+            <div class="hero-text">
+                <p class="eyebrow">Realtime Lab</p>
+                <h1 id="heroTitle">Speed Diagnostics Lab</h1>
+                <p>
+                    Measure download, upload, and latency.
+                    Every run is logged locally so you can compare sessions over time.
+                </p>
+                <div class="hero-cta">
+                    <button class="btn primary" id="startTest" type="button" disabled>
+                        <i class="fa-solid fa-gauge-high"></i>
+                        Start full test
+                    </button>
+                    <span class="status-chip" id="statusChip" data-state="idle">
+                        <i class="fa-solid fa-circle"></i>
+                        Idle • Ready
+                    </span>
+                    <span class="status-chip" id="serverRoute" data-state="idle">
+                        <i class="fa-solid fa-route"></i>
+                        Node: FRA-1
+                    </span>
+                </div>
+                <div class="consent-block">
+                    <label class="consent">
+                        <input type="checkbox" id="dataConsent" />
+                        <span>
+                            I agree to run an M-Lab ndt7 test. <a href="https://www.measurementlab.net/privacy/" target="_blank" rel="noopener">Test data</a> is sent to Measurement Lab.
+                        </span>
+                    </label>
+                </div>
+                <p class="hint">Live graph refreshes every 350ms • History stored in your browser only</p>
+            </div>
+            <div class="hero-metrics">
+                <div class="metric-grid">
+                    <article class="metric-card download">
+                        <h3>Download</h3>
+                        <div class="value">
+                            <span id="downloadValue">0.00</span>
+                            <span class="unit">Mbps</span>
+                        </div>
+                        <p>Peak <strong id="downloadPeak">0.00</strong> Mbps</p>
+                    </article>
+                    <article class="metric-card upload">
+                        <h3>Upload</h3>
+                        <div class="value">
+                            <span id="uploadValue">0.00</span>
+                            <span class="unit">Mbps</span>
+                        </div>
+                        <p>Peak <strong id="uploadPeak">0.00</strong> Mbps</p>
+                    </article>
+                    <article class="metric-card ping">
+                        <h3>Ping</h3>
+                        <div class="value">
+                            <span id="pingValue">0</span>
+                            <span class="unit">ms</span>
+                        </div>
+                        <p>Stability <strong id="pingStability">—</strong></p>
+                    </article>
+                </div>
+                <p class="hero-note"><i class="fa-solid fa-shield-heart"></i> Powered by real ndt7 measurements via Measurement Lab (M-Lab).</p>
+            </div>
+        </section>
+
+        <section class="grid-two-col" aria-label="Live telemetry and insights">
+            <article class="graph-card glass">
+                <header>
+                    <div>
+                        <p class="eyebrow">Live graph</p>
+                        <h2>Realtime telemetry</h2>
+                    </div>
+                    <div class="legend" aria-hidden="true">
+                        <span><span class="dot download"></span> Download</span>
+                        <span><span class="dot upload"></span> Upload</span>
+                    </div>
+                </header>
+                <canvas id="speedGraph" width="900" height="320" role="img" aria-label="Live speed graph"></canvas>
+                <div class="graph-meta">
+                    <div class="stat">
+                        <span class="label">Avg download</span>
+                        <span class="value"><span id="avgDownload">0.00</span> Mbps</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Avg upload</span>
+                        <span class="value"><span id="avgUpload">0.00</span> Mbps</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Current ping</span>
+                        <span class="value"><span id="graphPing">0</span> ms</span>
+                    </div>
+                </div>
+            </article>
+            <article class="insights-card glass">
+                <header>
+                    <div>
+                        <p class="eyebrow">Extra info</p>
+                        <h2>Session insights</h2>
+                    </div>
+                </header>
+                <ul class="insight-list">
+                    <li>
+                        <div>
+                            <div class="label">Jitter</div>
+                            <div class="value"><span id="jitterValue">0.0</span> ms</div>
+                        </div>
+                        <span class="pill" id="jitterBadge">stable</span>
+                    </li>
+                    <li>
+                        <div>
+                            <div class="label">Packet loss</div>
+                            <div class="value"><span id="packetLossValue">0.0</span>%</div>
+                        </div>
+                        <span class="pill" id="lossBadge">clean</span>
+                    </li>
+                    <li>
+                        <div>
+                            <div class="label">Consistency</div>
+                            <div class="value" id="consistencyValue">—</div>
+                        </div>
+                        <span class="pill" id="consistencyBadge">pending</span>
+                    </li>
+                    <li>
+                        <div>
+                            <div class="label">Best recorded run</div>
+                            <div class="value" id="bestRecordValue">—</div>
+                        </div>
+                        <span class="pill">history</span>
+                    </li>
+                </ul>
+            </article>
+        </section>
+
+        <section class="history glass" aria-label="Test history">
+            <header>
+                <div>
+                    <p class="eyebrow">History</p>
+                    <h2>Past sessions</h2>
+                </div>
+                <button class="btn ghost" type="button" id="clearHistory">
+                    <i class="fa-solid fa-broom"></i>
+                    Clear history
+                </button>
+            </header>
+            <div id="historyList" class="history-list" aria-live="polite"></div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>Made with <i class="fa-solid fa-heart"></i> by Lyvt</p>
+            <p>© All Rights Reserved by Lyvt</p>
+        </div>
+    </footer>
+</body>
+</html>
